@@ -151,6 +151,6 @@ df_schools_details
 # Exporting --------------------------------------------------------------
 
 readr::write_csv(link_school, "link_school.csv")
-readr::write_csv(df_schools_details, "df_schools_details.csv")
+readr::write_csv(df_schools_details, "df_schools_details_80.csv")
 readr::write_csv(schools, "schools.csv")
-
+readr::write_csv(df_schools_details_unique, "df_schools_details_80.csv")
