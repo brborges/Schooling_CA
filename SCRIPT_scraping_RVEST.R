@@ -143,7 +143,43 @@ df_schools_details
 
 # Tidy -------------------------------------------------------------
 
+schools_80 <- schools_80 %>% unique()
 
+df_consolidated <- schools_80 %>%
+                      rename(school_name = Name) %>% 
+                      left_join(df_schools_details_unique, by="school_name")
+  
+df_consolidated %>% glimpse()  
+
+df_LA <- df_consolidated %>% 
+  filter(!is.na(school_district)) %>% 
+  filter(stringr::str_detect(city, "^Los Angeles"))
+
+## rating average by Los Angeles districts
+df_LA %>%
+  mutate(Rating = as.numeric(Rating)) %>% 
+  filter(Rating >= 80) %>% 
+  group_by(school_district) %>% 
+  summarise(Rating = median(Rating, na.rm =T)) %>% 
+  arrange(desc(Rating)) %>% View
+
+## rating average for the whole CA
+df_consolidated %>%
+  mutate(Rating = as.numeric(Rating)) %>% 
+  filter(Rating >= 80) %>% 
+  group_by(school_district) %>% 
+  summarise(Rating = median(Rating, na.rm =T)) %>% 
+  arrange(desc(Rating)) %>% View
+
+df_LA$school_district %>%
+  unique() 
+
+
+df_LA %>% 
+  filter(school_district == "Los Angeles Unified") %>% 
+  arrange(desc(Rating)) %>% View
+
+## 
 
 # Visualization ------------------------------------------------------------
 
@@ -153,4 +189,6 @@ df_schools_details
 readr::write_csv(link_school, "link_school.csv")
 readr::write_csv(df_schools_details, "df_schools_details_80.csv")
 readr::write_csv(schools, "schools.csv")
+readr::write_csv(schools_80, "schools_80.csv")
 readr::write_csv(df_schools_details_unique, "df_schools_details_80.csv")
+readr::write_csv(df_consolidated, "df_consolidated.csv")
